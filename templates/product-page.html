@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+
+{% block maincontent%}
+<style>
+.al{
+
+        color: black;
+        border: 2px solid gray;
+        margin: 2px;
+        padding: 5px 5px;
+        width: 40px;
+        height:40px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+
+}
+
+  .al:hover {
+    background-color: gray;
+    color: black;
+  }
+  .al-active{
+    background-color: grey;
+    color: black;
+    border: 2px solid black !important;
+    padding: 5px 5px;
+    width: 40px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+.cl{
+    width: 30px;
+    height:30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+
+  .cl:hover {
+    border: 2px solid gray;
+  }
+
+.cl-active{
+    border: 2px solid black !important;
+}
+{% for color in product.colors.all %}
+.color-{{forloop.counter}}{
+    background-color: {{color.colorcode}};
+    border:1px solid grey;
+}
+
+{% endfor %}
+
+
+</style>
+
+<!--Main layout-->
+<main class="mt-5 pt-4">
+    <div class="container dark-grey-text mt-5">
+
+        <!--Grid row-->
+        <div class="row wow fadeIn">
+
+            <!--Grid column-->
+            <div class="col-md-6 mb-4">
+
+                <img src="{{ object.image.url }}" class="img-fluid" alt="">
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-md-6 mb-4">
+
+                <!--Content-->
+                <div class="p-4">
+
+                    <div class="mb-3">
+                        <a href="">
+                            <span class="badge purple mr-1">{{ object.get_category_display }} </span>
+                        </a>
+
+                    </div>
+
+                    <p class="lead font-weight-bold">Availability : {{ object.get_availabily_display }}</p>
+                    <div class='form-group size' id='size'>
+                    <div class='label-size'>Select Size: <span id='size-label'></span>
+
+                    </div>
+                  </div>
+                  <div>
+                    {% for size in object.sizes %}
+                      <a class="al">{{size}}</a>
+                    {% endfor %}
+                  </div>
+
+                  <div class='mt-3'>
+                      <label class='label-size'>Select Colour: <span id='color-label'></span></label>
+                  </div>
+
+                  <div class='mb-4'>
+                    {% for color in object.colors.all %}
+
+                      <a class='color-{{forloop.counter}} cl' id='{{color}}' data-toggle="tooltip" data-placement="bottom" title='{{color}}'></a>
+                    {% endfor %}
+                  </div>
+
+
+
+                    <p class="lead">
+
+                        {% if object.discount_price %}
+                        <span class="mr-1">
+                      <del>
+                            {{ object.price  }}
+                      </del>
+                    </span>
+                        <span>RS{{ object.discount_price }}</span>
+                        {% else %}
+
+                        <span>${{ object.price }}</span>
+
+                        {% endif %}
+
+                    </p>
+
+                    <p class="lead font-weight-bold">Description</p>
+
+                    <p> {{ object.description }}</p>
+
+                    <!--            <form class="d-flex justify-content-left">-->
+                    <!--              &lt;!&ndash; Default input &ndash;&gt;-->
+                    <!--              <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">-->
+                    <!--              <button class="btn btn-primary btn-md my-0 p" type="submit">Add to cart-->
+                    <!--                <i class="fas fa-shopping-cart ml-1"></i>-->
+                    <!--              </button>-->
+
+                    <!--            </form>-->
+
+
+                    {% if object.availabily == 'S' %}
+
+
+                    <a  href="{% url 'add-to-cart' object.slug %}" class="btn btn-primary btn-md my-0 p">Add to cart
+                        <i class="fas fa-shopping-cart ml-1"></i>
+                    </a>
+
+
+                    <a  href="{% url 'remove-from-cart' object.slug %}" class="btn btn-danger btn-md my-0 p">Remove From cart
+                        <i class="fas fa-shopping-cart ml-1"></i>
+                    </a>
+
+                    {% endif %}
+
+
+                </div>
+                <!--Content-->
+
+            </div>
+            <!--Grid column-->
+
+        </div>
+        <!--Grid row-->
+
+        <!--Grid row-->
+
+    </div>
+</main>
+<!--Main layout-->
+{%  endblock %}
+{% block extra_scripts %}
+<script>
+  var size='Nn';
+  var color='Nn';
+  var sp = 0;
+  var cp = 0;
+
+    $(".al").click(function(e){
+      $(".al").removeClass("al-active")
+      $(this).addClass("al-active")
+      size = $(this).html()
+      $('#size-label').html(size)
+    })
+
+    $(".cl").click(function(e){
+      $(".cl").removeClass("cl-active")
+      $(this).addClass("cl-active")
+      color = $(this).attr('id')
+      $('#color-label').html(color)
+    })
+    $(document).on('submit', '#form1', function (e) {
+      if (size=='Nn'){
+        $('#size-label').html('Please select size!')
+        sp = 0
+      }
+      else{
+        sp = 1
+      }
+      if (color=='Nn'){
+        $('#color-label').html('Please select colour!')
+        cp = 0
+      }
+      else{
+        cp = 1
+      }
+      if (cp == 1 && sp == 1) {
+        $("<input />").attr("type", "hidden")
+            .attr("name", "size")
+            .attr("value", size)
+            .appendTo("#form1");
+        $("<input />").attr("type", "hidden")
+            .attr("name", "color")
+            .attr("value", color)
+            .appendTo("#form1");
+        return true;
+      }
+      else{
+        return false;
+      }
+    });
+</script>
+{% endblock extra_scripts %}
