@@ -89,6 +89,8 @@ class OrderItem(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     ordered = models.BooleanField(default=False)
+    size = models.CharField(max_length=100, blank=True)
+    color = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return f"{self.quantity} of {self.item.title}"

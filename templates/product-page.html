@@ -48,7 +48,7 @@
 .cl-active{
     border: 2px solid black !important;
 }
-{% for color in product.colors.all %}
+{% for color in object.colors.all %}
 .color-{{forloop.counter}}{
     background-color: {{color.colorcode}};
     border:1px solid grey;
@@ -78,6 +78,8 @@
             <div class="col-md-6 mb-4">
 
                 <!--Content-->
+                <form method = 'POST' id='form1' action="{% url 'add-to-cart' object.slug %}">
+                {% csrf_token %}
                 <div class="p-4">
 
                     <div class="mb-3">
@@ -146,20 +148,19 @@
                     {% if object.availabily == 'S' %}
 
 
-                    <a  href="{% url 'add-to-cart' object.slug %}" class="btn btn-primary btn-md my-0 p">Add to cart
+                    <button type='submit' class="btn btn-primary btn-md my-0 p">Add to cart
                         <i class="fas fa-shopping-cart ml-1"></i>
-                    </a>
+                    </button>
 
 
-                    <a  href="{% url 'remove-from-cart' object.slug %}" class="btn btn-danger btn-md my-0 p">Remove From cart
-                        <i class="fas fa-shopping-cart ml-1"></i>
-                    </a>
+                  
 
                     {% endif %}
 
 
                 </div>
                 <!--Content-->
+                </form>
 
             </div>
             <!--Grid column-->
